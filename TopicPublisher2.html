@@ -26,6 +26,10 @@
 	      var vpn = document.getElementById('message-vpn').value;
 	      simq = new Simq(hosturl, vpn, username, pass);
       };
+      function msgCallback(msgText) {
+	      document.getElementById('log').value += msgText;
+	      document.getElementById('log').value += "\n";
+      }
     </script>
 	<style>
         .warning {
@@ -80,22 +84,22 @@
 
           <div class="pure-control-group">
             <label for="hosturl">Solace router host url</label>
-            <input id="hosturl" type="text" placeholder="<protocol://host[:port]>">
+            <input id="hosturl" type="text" placeholder="<protocol://host[:port]>" value="ws://mr-91b692du2x.messaging.solace.cloud:20739">
           </div>
 
           <div class="pure-control-group">
             <label for="message-vpn">Message-vpn</label>
-            <input id="message-vpn" type="text" placeholder="Message VPN" value="default">
+            <input id="message-vpn" type="text" placeholder="Message VPN" value="msgvpn-91b6933301">
           </div>
 
           <div class="pure-control-group">
             <label for="username">Username</label>
-            <input id="username" type="text" placeholder="Username">
+            <input id="username" type="text" placeholder="Username" value="solace-cloud-client">
           </div>
 
           <div class="pure-control-group">
             <label for="password">Password</label>
-            <input id="password" type="password" placeholder="Password">
+            <input id="password" type="text" placeholder="Password" value="q0gjk32v5i9jgatla86s2osgoe">
           </div>
 
         </fieldset>
@@ -105,17 +109,27 @@
 		  id="connect"
     		  onclick="connect_simq()"
 		  >Connect</button>
-          <button type="button" class="pure-button button-error" id="disconnect">Disconnect</button>
         </p>
+
         <p>
+          <textarea id="topic" rows="1" cols="30">topic1</textarea>
+          <button type="button" 
+		  class="pure-button pure-button-primary" 
+		  id="subscribe"
+   		  onclick="simq.subscribe(document.getElementById('topic').value, msgCallback)"
+		  >Subscribe</button>
+        </p>
+
+        <p>
+          <textarea id="sendmsg" rows="1" cols="30">Message text</textarea>
           <button type="button" 
 		  class="pure-button pure-button-primary" 
 		  id="publish"
-   		  onclick="simq.publishText('mytopic', 'blabla')"
+   		  onclick="simq.publishText(document.getElementById('topic').value, document.getElementById('sendmsg').value)"
 		  >Publish Message</button>
         </p>
         
-        <textarea id="log" rows="20" cols="90" autofocus></textarea>
+        <textarea id="log" rows="20" cols="90"></textarea>
         
       </form>
 

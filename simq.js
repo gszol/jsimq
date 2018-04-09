@@ -62,13 +62,15 @@ function Simq(routerUrl, msgVpn, username, password) {
 
 	this.session.on(solace.SessionEventCode.SUBSCRIPTION_OK, function (sessionEvent) {
 		this.topicSubscriptionState.set(sessionEvent.correlationKey, "Subscribed");
-	});
+	}.bind(this));
 
 // define message event listener
 	this.session.on(solace.SessionEventCode.MESSAGE, function (message) {
-		var topic = message.getDestination.getName();
-		topicCallbacks[topic].forEach(function(element) { element(message);});
-	});
+		console.log("message!");
+		console.log(message);
+		var topic = message.getDestination().getName();
+		this.topicCallbacks[topic].forEach(function(element) { element(message.getBinaryAttachment());});
+	}.bind(this));
 // connect the session
 
 	console.log("First connect attempt.");
